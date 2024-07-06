@@ -87,3 +87,6 @@ with DAG('alimentation_metros', default_args=default_args, schedule_interval='@h
         task_id=f"metro_14",
         bash_command=f"cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_14",
     )
+
+    metro_1>>metro_2>>metro_3>>metro_3B>>metro_4>>metro_5>>metro_6>>metro_7>>metro_7B>>metro_8
+    metro_8 >> metro_9 >> metro_10 >> metro_11 >> metro_12 >> metro_13 >> metro_14
