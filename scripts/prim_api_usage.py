@@ -14,15 +14,19 @@ def get_metro_route(metro, token):
 
 
 def etl_metro_route(dataset, token):
+    next_metro_stops = []
     estimated_calls = \
-        dataset['Siri']['ServiceDelivery']['EstimatedTimetableDelivery'][0]['EstimatedJourneyVersionFrame'][0][
-            'EstimatedVehicleJourney'][0]['EstimatedCalls']['EstimatedCall']
-    next_stops = []
-    for call in estimated_calls:
-        timestamp = call['ExpectedDepartureTime']
-        stop_point = get_stop_point_name(call['StopPointRef']['value'], token)
-        next_stops.append((timestamp, stop_point))
-    return next_stops
+        dataset['Siri']['ServiceDelivery']['EstimatedTimetableDelivery']
+    for estimated_timetable_delivery in estimated_calls:
+        for estimated_journey_version_frame in estimated_timetable_delivery['EstimatedJourneyVersionFrame']:
+            for estimated_vehicle_journey in estimated_journey_version_frame['EstimatedVehicleJourney']:
+                for estimated_call in estimated_vehicle_journey['EstimatedCalls']['EstimatedCall']:
+                    metro_stop_id = estimated_call['StopPointRef']['value']
+                    metro_stop_point = get_stop_point_name(metro_stop_id, token)
+                    metro_timestamp = estimated_call['ExpectedDepartureTime']
+                    next_metro_stops.append((metro_timestamp, metro_stop_point))
+    return next_metro_stops
+
 
 
 if __name__ == '__main__':
