@@ -21,8 +21,11 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
           script: |
-            if [ -d '/home/ubuntu/containers/esgi_4iabd_pa/back_process/' ]; then
-              rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/
+            if [ -d '/home/ubuntu/containers/esgi_4iabd_pa/back_process/dags' ]; then
+              rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/dags
+            fi
+            if [ -d '/home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts' ]; then
+              rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts
             fi
 
   uploadFiles:
@@ -40,8 +43,18 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
-          source: '.'
-          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/'
+          source: './dags'
+          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/dags'
+
+      - name: Copy repository contents via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSHKEY }}
+          source: './scripts'
+          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts'
 
   updateEnvFile:
     runs-on: ubuntu-latest
@@ -67,24 +80,3 @@ jobs:
             echo 'DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}' >> .env
             echo 'DATABASE_PASSWORD=${{ secrets.PRIM_TOKEN }}' >> .env
             echo 'DATABASE_PASSWORD=${{ secrets.NAVITIA_TOKEN }}' >> .env
-
-
-  buildAndRun:
-    runs-on: ubuntu-latest
-    needs: updateEnvFile
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Executing remote command
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          port: ${{ secrets.PORT }}
-          key: ${{ secrets.SSHKEY }}
-          script: |
-            cd /home/ubuntu/containers/esgi_4iabd_pa/back_process/
-            docker-compose down --remove-orphans
-            docker-compose up --build -d
