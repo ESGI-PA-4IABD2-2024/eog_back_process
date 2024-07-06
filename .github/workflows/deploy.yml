@@ -44,7 +44,7 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
           source: 'dags/'
-          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/dags/'
+          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/'
 
       - name: Copy repository contents via scp
         uses: appleboy/scp-action@master
@@ -54,7 +54,7 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.SSHKEY }}
           source: 'scripts/'
-          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts/'
+          target: '/home/ubuntu/containers/esgi_4iabd_pa/back_process/'
 
   updateEnvFile:
     runs-on: ubuntu-latest
