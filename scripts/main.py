@@ -22,7 +22,7 @@ if __name__ == '__main__':
                                      user=rer_user,
                                      pwd=rer_pwd)
     else:
-        f = open("./test_dataset/rer_a.txt", "r")
+        f = open("test_dataset/rer_a.txt", "r")
         api_result = f.read()
         f.close()
     # print(api_result) # DEBUG
