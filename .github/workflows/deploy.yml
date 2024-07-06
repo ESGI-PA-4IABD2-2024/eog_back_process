@@ -22,10 +22,10 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           script: |
             if [ -d '/home/ubuntu/containers/esgi_4iabd_pa/back_process/dags' ]; then
-              rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/dags
+              sudo rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/dags
             fi
             if [ -d '/home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts' ]; then
-              rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts
+              sudo rm -rf /home/ubuntu/containers/esgi_4iabd_pa/back_process/scripts
             fi
 
   uploadFiles:
