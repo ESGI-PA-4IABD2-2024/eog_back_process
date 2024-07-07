@@ -85,28 +85,11 @@ def get_hourly_route(ligne: str, token: str) -> Any | None:
     return None
 
 
-def get_stop_point_name(stop_point_id: str, token: str) -> Any | None:
-    query = f"https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef={stop_point_id}"
-    headers = {'Accept': 'application/json', 'apikey': token}
-
-    while True:
-        try:
-            response = requests.get(query, headers=headers)
-            response.raise_for_status()
-            break
-        except requests.RequestException as e:
-            if e.response is not None and e.response.status_code == 429:  # Too Many Requests
-                retry_after = int(e.response.headers.get('Retry-After', 60))  # default to 60 seconds if not provided
-                print(f"Erreur de connexion API : {e}. Nouvel essai dans {retry_after} secondes.")
-                time.sleep(retry_after)
-            else:
-                print(f"Erreur de connexion API : {e}")
-                return None
-
+def get_stop_point_name(stop_point_id: str) -> Any | None:
+    with open('./api/correspondances_arrets.json', 'r') as f:
+        correspondance_dict = json.load(f)
     try:
-        api_content_json = response.json()
-        stop_point_name = api_content_json['Siri']['ServiceDelivery']['StopMonitoringDelivery'][0]['MonitoredStopVisit'][0]['MonitoredVehicleJourney']['MonitoredCall']['StopPointName'][0]['value']
-        return stop_point_name
-    except (KeyError, IndexError, ValueError) as e:
-        print(f"Erreur de parsing JSON : {e}")
-        return None
+        nom_arret = correspondance_dict[stop_point_id]
+        return nom_arret
+    except KeyError:
+        raise ValueError(f"L'identifiant '{stop_point_id}' n'est pas présent dans correspondances_arrets.json")# ou raise une exception personnalisée si vous préférez

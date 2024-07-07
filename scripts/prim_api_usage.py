@@ -22,11 +22,10 @@ def etl_metro_route(dataset, token):
             for estimated_vehicle_journey in estimated_journey_version_frame['EstimatedVehicleJourney']:
                 for estimated_call in estimated_vehicle_journey['EstimatedCalls']['EstimatedCall']:
                     metro_stop_id = estimated_call['StopPointRef']['value']
-                    metro_stop_point = get_stop_point_name(metro_stop_id, token)
+                    metro_stop_point = get_stop_point_name(metro_stop_id)
                     metro_timestamp = estimated_call['ExpectedDepartureTime']
                     next_metro_stops.append((metro_timestamp, metro_stop_point))
     return next_metro_stops
-
 
 
 if __name__ == '__main__':
