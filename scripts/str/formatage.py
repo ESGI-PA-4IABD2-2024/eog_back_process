@@ -1,26 +1,28 @@
-from typing import Union, Tuple
+from typing import Union
 
 
 def format_date(nb: int) -> str:
-    return str(nb) if nb > 9 else ('0' + str(nb))
+    return str(nb) if nb > 9 else ("0" + str(nb))
 
 
 def format_hour(nb: int) -> str:
     nb *= 10_000
     nb = str(nb)
     if len(nb) < 6:
-        nb = '0' + nb
+        nb = "0" + nb
 
     return nb
 
 
-def datetime_to_date_hour(str_date: str, RETURN_VALUES: bool=False) -> Union[tuple[int, int, int, int, int], str]:
+def datetime_to_date_hour(
+    str_date: str, RETURN_VALUES: bool = False
+) -> Union[tuple[int, int, int, int, int], str]:
     """
     formate les dates "20240629T180400" en "29/06/2024 18:04"
     :param str_date:
     :return:
     """
-    date_half, time_half = str_date.split('T')
+    date_half, time_half = str_date.split("T")
 
     year = date_half[:4]
     month = date_half[4:6]
@@ -29,7 +31,7 @@ def datetime_to_date_hour(str_date: str, RETURN_VALUES: bool=False) -> Union[tup
     hour = time_half[:2]
     minute = time_half[2:4]
 
-    formated_date = f'{day}/{month}/{year} {hour}:{minute}'
+    formated_date = f"{day}/{month}/{year} {hour}:{minute}"
 
     if RETURN_VALUES:
         return int(year), int(month), int(day), int(hour), int(minute)

@@ -21,7 +21,7 @@ class Stop:
 
 
 class Trajet:
-     # Linked List de Stops (= quais)
+    # Linked List de Stops (= quais)
     def __init__(self):
         self.head = None
 
