@@ -69,24 +69,12 @@ def delete_old_data():
         return None
     try:
         cursor = connection.cursor()
-        query_delete_routes = (
-            "DELETE FROM routes "
-            "WHERE id_circulation in ("
-            "    SELECT id_circulation "
-            "    FROM ("
-            "        SELECT id_circulation "
-            "        FROM circulation "
-            "        WHERE insertion_date = DATE_SUB(CURDATE(), INTERVAL 7 DAY"
-            "        ) as subquery"
-            "    );"
-        )
         query_delete_circulation = (
-            "DELETE FROM circulation "
-            "WHERE insertion_date = DATE_SUB(CURDATE(), INTERVAL 7 DAY);"
+            "DELETE FROM circulation " "WHERE insertion_date = DATE_SUB(CURDATE(), INTERVAL 7 DAY)"
         )
-        cursor.executemany(query_delete_routes)
-        cursor.executemany(query_delete_circulation)
+        cursor.execute(query_delete_circulation)
         connection.close()
+        return True
     except Exception as e:
         print(f"Error: {e}")
         return None

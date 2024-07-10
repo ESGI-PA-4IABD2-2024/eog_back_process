@@ -47,9 +47,8 @@ if __name__ == "__main__":
     prim_token = os.environ.get("PRIM_TOKEN")
     data_metro = get_metro_route(metro=args.ligne, token=prim_token)
     next_stops = etl_metro_route(dataset=data_metro)
-    circu_train_name = get_line_short_name(args.ligne)
+    circulation_train_name = get_line_short_name(args.ligne)
     start_id_circulation = select_max_id_circulation() + 1
-    print(start_id_circulation)
-    result = insert_route_into_db(next_stops, circu_train_name, start_id_circulation)
+    result = insert_route_into_db(next_stops, circulation_train_name, start_id_circulation)
     if result:
         print("Data inserted into db")

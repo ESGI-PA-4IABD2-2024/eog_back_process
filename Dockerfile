@@ -5,5 +5,4 @@ RUN pip install --upgrade SQLAlchemy==1.4.52 \
     pandas==2.1.4 \
     mysql-connector-python \
     python-dotenv \
-    datetime \
-    pytz
+    datetime
