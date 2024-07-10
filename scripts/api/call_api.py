@@ -90,4 +90,16 @@ def get_stop_point_name(stop_point_id: str) -> Any | None:
     except KeyError:
         raise ValueError(
             f"L'identifiant '{stop_point_id}' n'est pas présent dans correspondances_arrets.json"
-        )  # ou raise une exception personnalisée si vous préférez
+        )
+
+
+def get_line_short_name(stop_point_id: str) -> Any | None:
+    with open("./api/lines_short_name.json", "r") as f:
+        correspondance_dict = json.load(f)
+    try:
+        nom_arret = correspondance_dict[stop_point_id]
+        return nom_arret
+    except KeyError:
+        raise ValueError(
+            f"L'identifiant '{stop_point_id}' n'est pas présent dans lines_short_name.json"
+        )
