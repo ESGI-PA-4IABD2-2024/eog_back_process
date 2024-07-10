@@ -3,7 +3,10 @@ import json
 import os
 
 from api.call_api import get_hourly_route
+from api.call_api import get_line_short_name
 from api.call_api import get_stop_point_name
+from db.mysql_requests import insert_route_into_db
+from db.mysql_requests import select_max_id_circulation
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,7 +18,7 @@ def get_metro_route(metro, token):
     return data
 
 
-def etl_metro_route(dataset, token):
+def etl_metro_route(dataset):
     next_metro_stops = []
     estimated_calls = dataset["Siri"]["ServiceDelivery"]["EstimatedTimetableDelivery"]
     for estimated_timetable_delivery in estimated_calls:
@@ -43,6 +46,9 @@ if __name__ == "__main__":
 
     prim_token = os.environ.get("PRIM_TOKEN")
     data_metro = get_metro_route(metro=args.ligne, token=prim_token)
-    next_stops = etl_metro_route(dataset=data_metro, token=prim_token)
-    for timestamp, stop_point, direction_name in next_stops:
-        print(f"Next stop: {stop_point} at {timestamp} in direction of {direction_name}")
+    next_stops = etl_metro_route(dataset=data_metro)
+    circulation_train_name = get_line_short_name(args.ligne)
+    start_id_circulation = select_max_id_circulation() + 1
+    result = insert_route_into_db(next_stops, circulation_train_name, start_id_circulation)
+    if result:
+        print("Data inserted into db")
