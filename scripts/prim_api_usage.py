@@ -1,14 +1,12 @@
 import argparse
 import json
 import os
-from datetime import datetime
-from datetime import timedelta
 
-import pytz
 from api.call_api import get_hourly_route
 from api.call_api import get_line_short_name
 from api.call_api import get_stop_point_name
-from db.database_connection import get_db_connection
+from db.mysql_requests import insert_route_into_db
+from db.mysql_requests import select_max_id_circulation
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -41,62 +39,17 @@ def etl_metro_route(dataset):
     return next_metro_stops
 
 
-def change_date_format(timestamp):
-    dt = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
-    dt_utc = dt.replace(tzinfo=pytz.UTC)
-    dt_utc_plus_2 = dt_utc.astimezone(pytz.timezone("Europe/Paris"))
-    sql_datetime = dt_utc_plus_2.strftime("%Y-%m-%d %H:%M:%S.%f")
-    return sql_datetime
-
-
-def insert_route_into_db(dataset, line_short_name):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    try:
-        # Insertion des données dans la table circulation
-        circulation_values = [
-            (i + 1, line_short_name, str(data)) for i, data in enumerate(dataset)
-        ]
-        query = (
-            "INSERT INTO circulation (id_circulation, insertion_date, train_name, official_id) "
-            "VALUES (%s, NOW(), %s, %s)"
-        )
-        cursor.executemany(query, circulation_values)
-        connection.commit()
-
-        routes_values = []
-        for i, (timestamp, departure_station, arrival_station) in enumerate(dataset):
-            departure_hour = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(
-                hours=2
-            )
-            arrival_hour = departure_hour
-            # On suppose que l'heure d'arrivée  est la même que l'heure de départ
-            routes_values.append((1, 1, departure_hour, arrival_hour, i + 1))
-        query = (
-            "INSERT INTO routes (id_departure_platform, id_arrival_platform, "
-            "departure_hour, arrival_hour, id_circulation) VALUES (%s, %s, %s, %s, %s)"
-        )
-        cursor.executemany(query, routes_values)
-        connection.commit()
-
-        return True
-    except Exception as e:
-        print(f"Error: {e}")
-        return False
-    finally:
-        if connection:
-            connection.close()
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Choix des lignes")
     parser.add_argument("-ligne", type=str, help="", required=True)
     args = parser.parse_args()
-    circu_train_name = get_line_short_name(args.ligne)
 
     prim_token = os.environ.get("PRIM_TOKEN")
     data_metro = get_metro_route(metro=args.ligne, token=prim_token)
     next_stops = etl_metro_route(dataset=data_metro)
-    result = insert_route_into_db(next_stops, circu_train_name)
+    circu_train_name = get_line_short_name(args.ligne)
+    start_id_circulation = select_max_id_circulation() + 1
+    print(start_id_circulation)
+    result = insert_route_into_db(next_stops, circu_train_name, start_id_circulation)
     if result:
         print("Data inserted into db")
