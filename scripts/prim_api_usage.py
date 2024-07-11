@@ -5,8 +5,8 @@ import os
 from api.call_api import get_hourly_route
 from api.call_api import get_line_short_name
 from api.call_api import get_stop_point_name
+from db.mysql_requests import get_max_id_circulation
 from db.mysql_requests import insert_route_into_db
-from db.mysql_requests import select_max_id_circulation
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     data_metro = get_metro_route(metro=args.ligne, token=prim_token)
     next_stops = etl_metro_route(dataset=data_metro)
     circulation_train_name = get_line_short_name(args.ligne)
-    start_id_circulation = select_max_id_circulation() + 1
+    start_id_circulation = get_max_id_circulation() + 1
     result = insert_route_into_db(next_stops, circulation_train_name, start_id_circulation)
     if result:
         print("Data inserted into db")
