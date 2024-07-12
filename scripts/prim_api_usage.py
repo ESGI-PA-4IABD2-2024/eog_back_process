@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 
+from api.call_api import get_departure_from_arrival
 from api.call_api import get_hourly_route
 from api.call_api import get_line_short_name
 from api.call_api import get_stop_point_name
@@ -19,6 +20,13 @@ def get_metro_route(metro, token):
 
 
 def etl_metro_route(dataset):
+    # Préparation du traitement des départ/arrivées
+    with open("api/lines_order.json", "r") as f:
+        line_order_data = json.load(f)
+    line_order_dict = {}
+    for item in line_order_data:
+        line_order_dict[item["arrival_id"]] = item["depart_id"]
+
     next_metro_stops = []
     estimated_calls = dataset["Siri"]["ServiceDelivery"]["EstimatedTimetableDelivery"]
     for estimated_timetable_delivery in estimated_calls:
@@ -32,9 +40,10 @@ def etl_metro_route(dataset):
                 for estimated_call in estimated_vehicle_journey["EstimatedCalls"]["EstimatedCall"]:
                     metro_stop_id = estimated_call["StopPointRef"]["value"]
                     metro_stop_point = get_stop_point_name(metro_stop_id)
+                    origin_ref = get_departure_from_arrival(metro_stop_point, metro_direction_name)
                     metro_timestamp = estimated_call["ExpectedDepartureTime"]
                     next_metro_stops.append(
-                        (metro_timestamp, metro_stop_point, metro_direction_name)
+                        (metro_timestamp, origin_ref, metro_stop_point, metro_direction_name)
                     )
     return next_metro_stops
 

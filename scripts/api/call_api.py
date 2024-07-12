@@ -93,6 +93,19 @@ def get_stop_point_name(stop_point_id: str) -> Any | None:
         )
 
 
+def get_departure_from_arrival(arrival: str, direction: str) -> Any | None:
+    with open("./api/lines_order.json", "r") as f:
+        lines_dict = json.load(f)
+    try:
+        departure = "Unknown"
+        for line in lines_dict:
+            if arrival == line["arrival_id"] and direction == line["destination_name"]:
+                departure = line["depart_id"]
+        return departure
+    except KeyError:
+        raise ValueError(f"L'identifiant '{arrival}' n'est pas présent dans lines_order.json")
+
+
 def get_line_short_name(stop_point_id: str) -> Any | None:
     with open("./api/lines_short_name.json", "r") as f:
         correspondance_dict = json.load(f)
