@@ -1,7 +1,9 @@
 from datetime import datetime
 from datetime import timedelta
 
-from db.database_connection import get_db_connection
+import pandas as pd
+
+from scripts.db.database_connection import get_db_connection
 
 
 def insert_route_into_db(dataset, line_short_name, start_id):
@@ -64,10 +66,16 @@ def get_max_id_circulation():
         cursor.execute(query)
         max_id_circulation = cursor.fetchone()[0]
         cursor.close()
+
+        if max_id_circulation is None:
+            return 0
+
         return max_id_circulation
+
     except Exception as e:
         print(f"Error: {e}")
         return None
+
     finally:
         if connection:
             connection.close()
@@ -77,6 +85,7 @@ def get_id_gare(platform_name):
     connection = get_db_connection()
     if connection is None:
         return None
+
     try:
         cursor = connection.cursor()
         query = f"SELECT id_gare FROM stations WHERE name_station = '{platform_name}'"
@@ -84,9 +93,11 @@ def get_id_gare(platform_name):
         id_gare = cursor.fetchone()[0]
         cursor.close()
         return id_gare
+
     except Exception as e:
         print(f"Error: {e}")
         return None
+
     finally:
         if connection:
             connection.close()
@@ -116,6 +127,7 @@ def delete_old_data():
     connection = get_db_connection()
     if connection is None:
         return None
+
     try:
         cursor = connection.cursor()
         query_delete_circulation = (
@@ -124,9 +136,44 @@ def delete_old_data():
         cursor.execute(query_delete_circulation)
         connection.close()
         return True
+
     except Exception as e:
         print(f"Error: {e}")
         return None
+
     finally:
         if connection:
             connection.close()
+
+
+def get_existing_stations_and_platforms():
+    """
+    Récupère la liste des gares et de leurs quais déjà entrées en base. Sert à pouvoir update automatiquement la table avec de nouvelles gares.
+    """
+    connection = get_db_connection()
+
+    if connection is None:
+        return None
+    try:
+        cursor = connection.cursor()
+        query_fetch_stations = (
+            "SELECT ID_GARE, NAME_STATION, LIGNE_PLATFORM, ID_PLATFORM FROM stations LEFT JOIN platforms ON stations.id_gare = platforms.id_station"
+        )
+        cursor.execute(query_fetch_stations)
+        query_result = cursor.fetchall()
+        df_stations = pd.DataFrame(query_result, columns=["ID_GARE", "NAME_STATION", "LIGNE_PLATFORM", "ID_PLATFORM"])
+        connection.close()
+
+        # Supression des lignes DEPART et TERMINUS
+        df_filtered = df_stations[~df_stations['NAME_STATION'].isin(['DEPART', 'TERMINUS'])]
+
+        return df_filtered
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+    finally:
+        if connection:
+            connection.close()
+
