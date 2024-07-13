@@ -10,6 +10,10 @@ def insert_route_into_db(dataset, line_short_name, start_id):
         return None
     try:
         cursor = connection.cursor()
+
+        platform_names = list(set([data[1] for data in dataset] + [data[2] for data in dataset]))
+        station_ids = get_station_ids(platform_names)
+
         circulation_values = [
             (start_id + i, line_short_name, str(data)) for i, data in enumerate(dataset)
         ]
@@ -21,16 +25,22 @@ def insert_route_into_db(dataset, line_short_name, start_id):
         connection.commit()
 
         routes_values = []
-        for i, (timestamp, departure_station, arrival_station) in enumerate(dataset):
-            departure_hour = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(
+        for i, (timestamp, departure_platform, arrival_platform, direction) in enumerate(dataset):
+            arrival_hour = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(
                 hours=2
             )
-            arrival_hour = departure_hour
-            # On suppose que l'heure d'arrivée est la même que l'heure de départ
-            routes_values.append((1, 1, departure_hour, arrival_hour, start_id + i))
+            departure_platform_id = station_ids.get(departure_platform)
+            arrival_platform_id = station_ids.get(arrival_platform)
+            if departure_platform_id is None or arrival_platform_id is None:
+                print(f"Error: unknown platform {departure_platform} or {arrival_platform}")
+                return False
+            routes_values.append(
+                (departure_platform_id, arrival_platform_id, arrival_hour, start_id + i)
+            )
         query = (
             "INSERT INTO routes (id_departure_platform, id_arrival_platform, "
-            "departure_hour, arrival_hour, id_circulation) VALUES (%s, %s, %s, %s, %s)"
+            "arrival_hour, id_circulation) "
+            "VALUES (%s, %s, %s, %s)"
         )
         cursor.executemany(query, routes_values)
         connection.commit()
@@ -44,7 +54,7 @@ def insert_route_into_db(dataset, line_short_name, start_id):
             connection.close()
 
 
-def select_max_id_circulation():
+def get_max_id_circulation():
     connection = get_db_connection()
     if connection is None:
         return None
@@ -55,6 +65,45 @@ def select_max_id_circulation():
         max_id_circulation = cursor.fetchone()[0]
         cursor.close()
         return max_id_circulation
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    finally:
+        if connection:
+            connection.close()
+
+
+def get_id_gare(platform_name):
+    connection = get_db_connection()
+    if connection is None:
+        return None
+    try:
+        cursor = connection.cursor()
+        query = f"SELECT id_gare FROM stations WHERE name_station = '{platform_name}'"
+        cursor.execute(query)
+        id_gare = cursor.fetchone()[0]
+        cursor.close()
+        return id_gare
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+    finally:
+        if connection:
+            connection.close()
+
+
+def get_station_ids(platform_names):
+    connection = get_db_connection()
+    if connection is None:
+        return None
+    try:
+        cursor = connection.cursor()
+        query = "SELECT name_station, id_gare FROM stations WHERE name_station IN ({})".format(
+            ",".join(["%s"] * len(platform_names))
+        )
+        cursor.execute(query, platform_names)
+        station_ids = {row[0]: row[1] for row in cursor.fetchall()}
+        return station_ids
     except Exception as e:
         print(f"Error: {e}")
         return None
