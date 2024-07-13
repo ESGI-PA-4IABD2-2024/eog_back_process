@@ -3909,11 +3909,11 @@
   },
   {
     "depart_id": "Hôpital Bicêtre",
-    "arrival_id": "Villejuif - Gusatve Roussy",
+    "arrival_id": "Villejuif - Gustave Roussy",
     "destination_name": "Aéroport d'Orly"
   },
   {
-    "depart_id": "Villejuif - Gusatve Roussy",
+    "depart_id": "Villejuif - Gustave Roussy",
     "arrival_id": "L'Haÿ-les-Roses",
     "destination_name": "Aéroport d'Orly"
   },
@@ -3954,11 +3954,11 @@
   },
   {
     "depart_id": "L'Haÿ-les-Roses",
-    "arrival_id": "Villejuif - Gusatve Roussy",
+    "arrival_id": "Villejuif - Gustave Roussy",
     "destination_name": "Saint-Denis - Pleyel"
   },
   {
-    "depart_id": "Villejuif - Gusatve Roussy",
+    "depart_id": "Villejuif - Gustave Roussy",
     "arrival_id": "Hôpital Bicêtre",
     "destination_name": "Saint-Denis - Pleyel"
   },
