@@ -3,6 +3,7 @@ from datetime import datetime
 from airflow import DAG
 from airflow.models.baseoperator import chain
 from airflow.operators.bash_operator import BashOperator
+from airflow.utils.trigger_rule import TriggerRule
 
 default_args = {
     "owner": "Antoine",
@@ -18,81 +19,97 @@ with DAG(
     metro_1 = BashOperator(
         task_id="metro_1",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_1",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_2 = BashOperator(
         task_id="metro_2",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_2",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_3 = BashOperator(
         task_id="metro_3",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_3",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_3B = BashOperator(
         task_id="metro_3B",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_3B",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_4 = BashOperator(
         task_id="metro_4",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_4",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_5 = BashOperator(
         task_id="metro_5",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_5",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_6 = BashOperator(
         task_id="metro_6",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_6",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_7 = BashOperator(
         task_id="metro_7",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_7",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_7B = BashOperator(
         task_id="metro_7B",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_7B",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_8 = BashOperator(
         task_id="metro_8",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_8",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_9 = BashOperator(
         task_id="metro_9",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_9",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_10 = BashOperator(
         task_id="metro_10",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_10",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_11 = BashOperator(
         task_id="metro_11",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_11",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_12 = BashOperator(
         task_id="metro_12",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_12",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_13 = BashOperator(
         task_id="metro_13",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_13",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     metro_14 = BashOperator(
         task_id="metro_14",
         bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Metro_14",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     chain(
