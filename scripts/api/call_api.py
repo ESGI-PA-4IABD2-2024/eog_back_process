@@ -4,8 +4,8 @@ from datetime import timedelta
 from typing import Any
 
 import requests
-from str.formatage import format_date
-from str.formatage import format_hour
+
+from scripts.str.formatage import format_date, format_hour
 
 
 def get_today_route(ligne: str, url: str, user: str):
@@ -21,14 +21,18 @@ def get_today_route(ligne: str, url: str, user: str):
     ligne = ligne.upper()
 
     query = f"coverage/sncf/lines/line:SNCF:{ligne}/route_schedules"
-    api_content = requests.get(url + query, auth=user)
+    try:
+        api_content = requests.get(url + query, auth=(user, ""))
 
-    if api_content.status_code == 200:
-        api_content.encoding = "utf-8"
-        return api_content.text
+        if api_content.status_code == 200:
+            api_content.encoding = "utf-8"
+            return api_content.text
 
-    print("Erreur : connexion API")
-    return None
+        print(f"Erreur : une erreur est renvoyée par l'API ; code erreur : {api_content.status_code}")
+
+    except:
+        print("Erreur : impossible de joindre l'API ")
+        return None
 
 
 def get_monthly_route(ligne: str, url: str, user: str, start_datetime, end_datetime):

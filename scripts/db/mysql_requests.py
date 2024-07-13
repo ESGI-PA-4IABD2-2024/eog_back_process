@@ -7,6 +7,9 @@ from scripts.db.database_connection import get_db_connection
 
 
 def insert_route_into_db(dataset, line_short_name, start_id):
+    """
+    Insert des routes en base à partir d'un dataset.
+    """
     connection = get_db_connection()
     if connection is None:
         return None
@@ -176,4 +179,53 @@ def get_existing_stations_and_platforms():
     finally:
         if connection:
             connection.close()
+
+
+def insert_data(table_name: str, columns: str, data: list, insertion_date: bool = False):
+    connection = get_db_connection()
+    if connection is None:
+        return None
+
+    if len(columns.split(",")) != len(data[0]) and insertion_date == False:
+        print("Erreur d'insertion : le nombre de colonne indiqué ne correspond pas au nombre de données à insérer")
+        return False
+
+    try:
+        with connection.cursor() as cursor:
+            query = f"INSERT INTO {table_name} ({columns}) VALUES ({', '.join(['%s'] * len(columns.split(',')))})"
+            if insertion_date:
+                cursor.executemany(query.replace('%s)', 'NOW())'), data)
+            else:
+                cursor.executemany(query, data)
+            connection.commit()
+        return True
+    except Exception as e:
+        print(f"Error: {e} : could not insert into table {table_name}")
+        return False
+    finally:
+        if connection:
+            connection.close()
+
+
+def insert_new_stations(row_to_add: list):
+    table_name = "stations"
+    columns = "id_gare, name_station"
+    return insert_data(table_name, columns, row_to_add)
+
+def insert_new_platforms(row_to_add: list):
+    table_name = "platforms"
+    columns = "id_platform, id_station, ligne_platform, type"
+    return insert_data(table_name, columns, row_to_add)
+
+
+def insert_new_circulations(row_to_add: list):
+    table_name = "circulation"
+    columns = f"id_circulation, train_name, official_id, insertion_date"
+    return insert_data(table_name, columns, row_to_add, True)
+
+
+def insert_new_routes(row_to_add: list):
+    table_name = "routes"
+    columns = "id_departure_platform, id_arrival_platform, departure_hour, arrival_hour, id_circulation"
+    return insert_data(table_name, columns, row_to_add)
 

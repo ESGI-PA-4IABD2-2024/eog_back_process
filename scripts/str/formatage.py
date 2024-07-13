@@ -50,7 +50,7 @@ def date_rer_to_date_sql(date_str: str) -> str:
     hour_part = d[1]
     hour = hour_part[:2]
     minute = hour_part[2:4]
-    second = '00'
+    second = hour_part[4:6]
 
     return f"{year}-{month}-{day} {hour}:{minute}:{second}"
 
