@@ -111,12 +111,8 @@ def fetch_and_insert(ligne: str, DEBUG: bool = False):
 
 
 if __name__ == "__main__":
-    """
     parser = argparse.ArgumentParser(description="Choix des lignes")
     parser.add_argument("-ligne", type=str, help="", required=True)
     args = parser.parse_args()
 
     fetch_and_insert(args.ligne)
-    """
-
-    fetch_and_insert('H')
