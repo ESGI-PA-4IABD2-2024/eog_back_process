@@ -39,6 +39,22 @@ def datetime_to_date_hour(
     return formated_date
 
 
+def date_rer_to_date_sql(date_str: str) -> str:
+    # 20240629T180500 -> 2024-06-29 18:05:00
+    d = date_str.split("T")
+    date_part = d[0]
+    year = date_part[:4]
+    month = date_part[4:6]
+    day = date_part[6:]
+
+    hour_part = d[1]
+    hour = hour_part[:2]
+    minute = hour_part[2:4]
+    second = hour_part[4:6]
+
+    return f"{year}-{month}-{day} {hour}:{minute}:{second}"
+
+
 """
 def format_json(json_data: str) -> pd.DataFrame:
     rows = []

@@ -3,10 +3,10 @@ from scripts.str.formatage import datetime_to_date_hour
 
 class Stop:
     # Node de linked list Trajet
-    def __init__(self, id_circulation, name_gare, h_stop, ligne, next_gare=None):
+    def __init__(self, id_circulation, name_gare, date_time_stop, ligne, next_gare=None):
         self.id_circulation = id_circulation
         self.name_gare = name_gare
-        self.h_stop = h_stop
+        self.h_stop = date_time_stop
         self.ligne = ligne
         self.next_gare = next_gare
 
@@ -18,6 +18,10 @@ class Stop:
         self.display()
         if self.next_gare is not None:
             self.next_gare.display_all()
+
+    def get_id_circulation(self):
+        id = self.id_circulation.replace("vehicle_journey:", "")
+        return id
 
 
 class Trajet:
@@ -38,6 +42,9 @@ class Trajet:
     def display(self):
         self.head.display_all()
 
+    def next(self):
+        return self.head.next_gare
+
 
 class Circulation:
     def __init__(self, id_circulation, circulation_type, quai, name_train):
@@ -49,6 +56,11 @@ class Circulation:
 
 
 class Gares_parcoures:
+    """
+    Liste de gares rencontrées dans l'appel API.
+    Servira à terme à ajouter des gares automatiquement à la bdd.
+    """
+
     def __init__(self):
         self.set_gares = set()
 

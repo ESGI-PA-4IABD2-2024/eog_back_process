@@ -29,11 +29,11 @@ def etl_rer(data):
                     if (
                         dt["links"] != [] and dt["links"][0]["id"] == id_circulation
                     ):  # Vérifier que l'arrêt correspond à la circulation en cours
-                        h_stop = dt["date_time"]
+                        date_time_stop = dt["date_time"]
 
-                        if h_stop != "":
+                        if date_time_stop != "":
                             dic_circulations[id_circulation].trajet.append(
-                                id_circulation, name_gare, h_stop, quai
+                                id_circulation, name_gare, date_time_stop, quai
                             )
                             # dic_circulations[id_circulation].trajet.display()  # DEBUG
                             # print("---------------\n")

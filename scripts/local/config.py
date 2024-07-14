@@ -2,7 +2,7 @@ import json
 
 
 def load_config():
-    with open("./local/config.json") as config_file:
+    with open("../local/config.json") as config_file:
         file_content = json.load(config_file)
 
         return file_content
