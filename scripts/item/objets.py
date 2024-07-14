@@ -1,6 +1,4 @@
-import pandas as pd
-
-from scripts.str.formatage import datetime_to_date_hour, date_rer_to_date_sql
+from scripts.str.formatage import datetime_to_date_hour
 
 
 class Stop:
@@ -62,6 +60,7 @@ class Gares_parcoures:
     Liste de gares rencontrées dans l'appel API.
     Servira à terme à ajouter des gares automatiquement à la bdd.
     """
+
     def __init__(self):
         self.set_gares = set()
 

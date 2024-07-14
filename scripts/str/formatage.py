@@ -55,8 +55,6 @@ def date_rer_to_date_sql(date_str: str) -> str:
     return f"{year}-{month}-{day} {hour}:{minute}:{second}"
 
 
-
-
 """
 def format_json(json_data: str) -> pd.DataFrame:
     rows = []
