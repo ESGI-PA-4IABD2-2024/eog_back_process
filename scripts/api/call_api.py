@@ -4,8 +4,8 @@ from datetime import timedelta
 from typing import Any
 
 import requests
-
-from scripts.str.formatage import format_date, format_hour
+from str.formatage import format_date
+from str.formatage import format_hour
 
 
 def get_today_route(ligne: str, url: str, user: str):
@@ -28,9 +28,11 @@ def get_today_route(ligne: str, url: str, user: str):
             api_content.encoding = "utf-8"
             return api_content.text
 
-        print(f"Erreur : une erreur est renvoyée par l'API ; code erreur : {api_content.status_code}")
+        print(
+            f"Erreur : une erreur est renvoyée par l'API ; code erreur : {api_content.status_code}"
+        )
 
-    except:
+    except KeyError:
         print("Erreur : impossible de joindre l'API ")
         return None
 
