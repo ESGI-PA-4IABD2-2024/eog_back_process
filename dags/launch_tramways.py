@@ -13,7 +13,7 @@ default_args = {
 with DAG(
     "alimentation_tramways",
     default_args=default_args,
-    schedule_interval="*/15 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,00,1,2 * * *",
+    schedule_interval="*/15 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,00 * * *",
     catchup=False,
 ) as dag:
     tramway_1 = BashOperator(
