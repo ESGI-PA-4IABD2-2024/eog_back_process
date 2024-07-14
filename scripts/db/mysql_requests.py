@@ -192,7 +192,7 @@ def insert_data(table_name: str, columns: str, data: list, insertion_date: bool 
     if connection is None:
         return None
 
-    if (len(columns.split(",")) != len(data[0]) and insertion_date) is False:
+    if len(columns.split(",")) != len(data[0]) and insertion_date is False:
         print(
             "Erreur d'insertion : le nombre de colonne indiqué ne correspond pas "
             "au nombre de données à insérer"

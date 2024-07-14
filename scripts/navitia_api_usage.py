@@ -1,16 +1,14 @@
 import argparse
 import json
 import os
-
 import pandas as pd
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from api.call_api import get_today_route
-from db.mysql_requests import get_existing_stations_and_platforms
-from db.mysql_requests import get_max_id_circulation
-from db.mysql_requests import insert_new_circulations
-from db.mysql_requests import insert_new_platforms
-from db.mysql_requests import insert_new_routes
-from db.mysql_requests import insert_new_stations
 from dotenv import load_dotenv
+from db.mysql_requests import get_max_id_circulation, get_existing_stations_and_platforms, insert_new_stations, \
+    insert_new_platforms, insert_new_circulations, insert_new_routes
 from transform.etl import etl_rer
 from transform.prepare_query import prepare_insert_query
 
@@ -113,8 +111,12 @@ def fetch_and_insert(ligne: str, DEBUG: bool = False):
 
 
 if __name__ == "__main__":
+    """
     parser = argparse.ArgumentParser(description="Choix des lignes")
     parser.add_argument("-ligne", type=str, help="", required=True)
     args = parser.parse_args()
 
     fetch_and_insert(args.ligne)
+    """
+
+    fetch_and_insert('H')
