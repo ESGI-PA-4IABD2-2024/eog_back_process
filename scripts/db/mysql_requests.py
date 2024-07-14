@@ -3,7 +3,7 @@ from datetime import timedelta
 
 import pandas as pd
 
-from scripts.db.database_connection import get_db_connection
+from .database_connection import get_db_connection
 
 
 def insert_route_into_db(dataset, line_short_name, start_id):
