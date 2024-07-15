@@ -4036,5 +4036,42 @@
     "depart_id": "Mairie de Saint-Ouen",
     "arrival_id": "Saint-Denis - Pleyel",
     "destination_name": "Saint-Denis - Pleyel"
+  },
+
+  {
+    "depart_id": "DEPART",
+    "arrival_id": "Antony",
+    "duration": "0",
+    "destination_name": "Orly 4"
+  },
+  {
+    "depart_id": "Antony",
+    "arrival_id": "Orly 1, 2, 3",
+    "duration": "6",
+    "destination_name": "Orly 4"
+  },
+  {
+    "depart_id": "Orly 1, 2, 3",
+    "arrival_id": "Orly 4",
+    "duration": "2",
+    "destination_name": "Orly 4"
+  },
+  {
+    "depart_id": "DEPART",
+    "arrival_id": "Orly 4",
+    "duration": "0",
+    "destination_name": "Antony"
+  },
+  {
+    "depart_id": "Orly 4",
+    "arrival_id": "Orly 1, 2, 3",
+    "duration": "2",
+    "destination_name": "Antony"
+  },
+  {
+    "depart_id": "Orly 1, 2, 3",
+    "arrival_id": "Antony",
+    "duration": "6",
+    "destination_name": "Antony"
   }
 ]

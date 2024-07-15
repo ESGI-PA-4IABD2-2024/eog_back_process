@@ -1,10 +1,12 @@
 import json
-import requests
-
 from datetime import datetime
 from datetime import timedelta
 from typing import Any
-from scripts.str.formatage import format_date, format_hour
+
+import requests
+
+from scripts.str.formatage import format_date
+from scripts.str.formatage import format_hour
 
 
 def get_today_route(ligne: str, url: str, user: str):

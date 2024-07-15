@@ -112,6 +112,12 @@ with DAG(
         trigger_rule=TriggerRule.ALL_DONE,
     )
 
+    orlyval = BashOperator(
+        task_id="orlyval",
+        bash_command="cd /opt/airflow/scripts/ && python prim_api_usage.py -ligne Orlyval",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )
+
     chain(
         metro_1,
         metro_2,
@@ -129,4 +135,5 @@ with DAG(
         metro_12,
         metro_13,
         metro_14,
+        orlyval,
     )

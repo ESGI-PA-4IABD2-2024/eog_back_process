@@ -243,3 +243,72 @@ def insert_new_routes(row_to_add: list):
         "id_departure_platform, id_arrival_platform, departure_hour, arrival_hour, id_circulation"
     )
     return insert_data(table_name, columns, row_to_add)
+
+
+def get_clusters():
+    """
+    Récupère toutes les gares/clusters.
+    """
+    connection = get_db_connection()
+    if connection is None:
+        return None
+
+    try:
+        cursor = connection.cursor(buffered=True)
+        query = f"SELECT \
+                      id_cluster \
+                  FROM \
+                      cluster"
+        cursor.execute(query)
+        clusters = [row[0] for row in cursor.fetchall()]
+        cursor.close()
+        return clusters
+
+    except Exception as e:
+        print(f"error: {e}")
+        return None
+
+    finally:
+        if connection:
+            connection.close()
+
+
+def get_platforms_from_cluster(id_cluster: int):
+    """
+    Récupère tous les quais appartenant à cette gare/cluster.
+    """
+    connection = get_db_connection()
+    if connection is None:
+        return None
+
+    try:
+        cursor = connection.cursor(buffered=True)
+        query = f"SELECT \
+                      id_platform \
+                  FROM \
+                      cluster \
+                      INNER JOIN stations ON cluster.id_cluster = stations.id_cluster \
+                      INNER JOIN platforms ON stations.id_gare = platforms.id_station \
+                  WHERE \
+                      cluster.id_cluster = {id_cluster}"
+        cursor.execute(query)
+        platforms = [row[0] for row in cursor.fetchall()]
+        cursor.close()
+        return platforms
+
+    except Exception as e:
+        print(f"error: {e}")
+        return None
+
+    finally:
+        if connection:
+            connection.close()
+
+
+def insert_new_junctions(row_to_add: list):
+    table_name = "routes"
+    columns = (
+        "id_departure_platform, id_arrival_platform, route_time"
+    )
+    return insert_data(table_name, columns, row_to_add)
+
